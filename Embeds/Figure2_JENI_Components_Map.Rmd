@@ -1,0 +1,964 @@
+
+```{r setup, include = FALSE}
+
+knitr::opts_chunk$set(comment = FALSE, message = FALSE, warning = FALSE, echo = FALSE
+)
+
+```
+
+<style type="text/css">
+  h1{
+  font-family: tiempos-light;
+  color: #000000;
+  font-size: 24px;
+  font-weight: bold;
+  }
+  h2{
+   font-family: tiempos-light;
+  color: #000000;
+    font-size: 24px;
+      font-weight: bold;
+
+  }
+  h3{
+   font-family: tiempos-light;
+  color: #000000;
+  }
+  a{
+  font-family: tiempos-light;
+  color: #000000;
+  }
+  ul{
+  font-family: tiempos-light;
+  color: #000000;
+  }
+  ol{
+  font-family: tiempos-light;
+  color: #000000;
+  }
+  body{
+  font-family: tiempos-light;
+  color: #000000;
+}
+
+.legend {
+    width:325px;
+    opacity:  1;
+     border-left:1px solid #737373;
+    border-right:1px solid #737373;
+    border-top:1px solid #737373;
+    border-bottom:1px solid #737373;
+}
+.leaflet-touch .leaflet-control-layers {
+  border-left:1px solid #737373;
+    border-right:1px solid #737373;
+    border-top:1px solid #737373;
+    border-bottom:1px solid #737373;
+}
+
+.leaflet-popup-scrolled {
+  max-height: 420px;
+  overflow: auto;
+  padding-left: 2%;
+  border-bottom: 1px solid #ddd;
+  border-top: 1px solid #ddd;
+}
+
+.leaflet-left .leaflet-control {
+  background-color: white;
+  opacity: 1.0;
+}
+
+.leaflet-control-layers .leaflet-control .leaflet-control-layers-expanded {
+  background-color: white;
+  opacity: 1.0;
+}
+
+.info {
+    padding: 6px 8px;
+    font-size: 12px;
+    background: white;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgb(0 0 0 / 20%);
+    border-radius: 5px;
+}
+
+.hidden {
+  display: none;
+}
+
+.jeni-lowest {
+  font-size: 12px; 
+  font-weight: bold;
+  color: black;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #FFFF00; 
+}
+
+.jeni-lowest-bg-color {
+  background-color: #FFFF00; 
+}
+
+.jeni-low {
+  font-size: 12px; 
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #F2BF00; 
+}
+
+.jeni-low-bg-color {
+  background-color: #F2BF00; 
+}
+
+.jeni-moderate {
+  font-size: 12px; 
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #E68000; 
+}
+
+.jeni-moderate-bg-color {
+  background-color: #E68000; 
+}
+
+.jeni-high {
+  font-size: 12px; 
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #D94000; 
+}
+
+.jeni-high-bg-color {
+  background-color: #D94000; 
+}
+
+.jeni-highest {
+  font-size: 12px; 
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #CC0000; 
+}
+.jeni-highest-bg-color {
+  background-color: #CC0000; 
+}
+
+.system-lowest {
+  font-size: 12px; 
+  font-weight: bold;
+  color: black;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #EDF8E9; 
+}
+
+.system-lowest-bg-color {
+  background-color: #EDF8E9; 
+}
+
+.system-low {
+  font-size: 12px; 
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #BAE4B3; 
+}
+
+.system-low-bg-color {
+  background-color: #BAE4B3; 
+}
+
+.system-moderate {
+  font-size: 12px; 
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #74C476; 
+}
+
+.system-moderate-bg-color {
+  background-color: #74C476; 
+}
+
+.system-high {
+  font-size: 12px; 
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #31A354; 
+}
+
+.system-high-bg-color {
+  background-color: #31A354; 
+}
+
+.system-highest {
+  font-size: 12px; 
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #006D2C; 
+}
+.system-highest-bg-color {
+  background-color: #006D2C; 
+}
+
+.drivers-lowest {
+  font-size: 12px; 
+  font-weight: bold;
+  color: black;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #EFF3FF; 
+}
+
+.drivers-lowest-bg-color {
+  background-color: #EFF3FF; 
+}
+
+.drivers-low {
+  font-size: 12px; 
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #BDD7E7; 
+}
+
+.drivers-low-bg-color {
+  background-color: #BDD7E7; 
+}
+
+.drivers-moderate {
+  font-size: 12px; 
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #6BAED6; 
+}
+
+.drivers-moderate-bg-color {
+  background-color: #6BAED6; 
+}
+
+.drivers-high {
+  font-size: 12px; 
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #3182BD; 
+}
+
+.drivers-high-bg-color {
+  background-color: #3182BD; 
+}
+
+.drivers-highest {
+  font-size: 12px; 
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #08519C; 
+}
+.drivers-highest-bg-color {
+  background-color: #08519C; 
+}
+
+.risk-lowest {
+  font-size: 12px; 
+  font-weight: bold;
+  color: black;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #F1F1C2; 
+}
+
+.risk-lowest-bg-color {
+  background-color: #F1F1C2; 
+}
+
+.risk-low {
+  font-size: 12px; 
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #DEDE91; 
+}
+
+.risk-low-bg-color {
+  background-color: #DEDE91; 
+}
+
+.risk-moderate {
+  font-size: 12px; 
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #CBCB61; 
+}
+
+.risk-moderate-bg-color {
+  background-color: #CBCB61; 
+}
+
+.risk-high {
+  font-size: 12px; 
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #B8B830; 
+}
+
+.risk-high-bg-color {
+  background-color: #B8B830; 
+}
+
+.risk-highest {
+  font-size: 12px; 
+  font-weight: bold;
+  color: white;
+  border-radius: 4px;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin: 4px;
+  background-color: #A6A600; 
+}
+
+.risk-highest-bg-color {
+  background-color: #A6A600; 
+}
+
+.zipcode-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  display: inline-block;
+}
+
+.category-color-error {
+  background-color: white; 
+}
+
+.progress-bar {
+  width: 95%;
+  display: flex;
+  height: 1em;
+  background-color: #FBFBFB;
+  box-shadow: 0 0 1px black;
+  border-radius: 0.25em;
+  position: relative;
+}
+
+.progress {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  border-radius: 0.25em;
+}
+
+.progress-jeni {
+  position: absolute;
+  height: 100%;
+  width: 0%;
+  border-radius: 0.25em;
+  box-shadow: 0 0 1px black;
+  
+}
+
+.progress-system {
+  position: absolute;
+  width: 0%;
+  height: 100%;
+  border-radius: 0.25em;
+  box-shadow: 0 0 1px black;
+  
+}
+
+.progress-drivers {
+  position: absolute;
+  width: 0%;
+  height: 100%;
+  border-radius: 0.25em;
+  box-shadow: 0 0 1px black;  
+}
+
+
+.progress-risk {
+  position: absolute;
+  width: 0%;
+  height: 100%;
+  border-radius: 0.25em;
+  box-shadow: 0 0 1px black;
+  
+}
+
+.square-icon {
+  height: 16px;
+  width: 16px;
+  margin-right: 2px;
+  border-radius: 0.25em;
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  box-shadow: 0 0 1px black;
+
+}
+
+
+.small-heading {
+  font-size: 12px;
+}
+
+
+</style>
+
+
+# Justice Equity Need Index Component Results {.tabset .tabset-fade}
+
+## Inequity Drivers
+```{r}
+# severity: [ "rgb(239,243,255)", "rgb(189,215,231)", "rgb(107,174,214)", "rgb(49,130,189)", "rgb(8,81,156)" ],​
+
+#blue
+pal_impact <- colorBin(palette = c("#eff3ff","#bdd7e7", "#6baed6", "#3182bd","#08519c"), domain = jeni$drivers_pctl, bins = 5, reverse = FALSE, pretty = FALSE)
+
+#create popup
+popup <- paste("<div class='hasjeni'><div class='drivers-leaflet-data' data-zip='", jeni$zipcode,
+               "' data-neighborhood='",jeni$lat_neighborhood,
+               "' data-jeni-pctl='",jeni$jeni_pctl,
+               "' data-jeni-category='",jeni$jeni_category,
+               "' data-jeni-rank='",jeni$jeni_rank,
+               "' data-population='",prettyNum(jeni$population_count, big.mark = ",", preserve.width = "none"),
+               "' data-sd-number='",jeni$sd_number,
+               "' data-sd-name='",jeni$sd_name,
+               "' data-spa-number='",jeni$spa_number,
+               "' data-spa-name='",jeni$spa_name,
+               "' data-system-category='",jeni$system_category,
+               "' data-drivers-category='",jeni$drivers_category,
+               "' data-risk-category='",jeni$risk_category,
+               "' data-system-pctl='",jeni$system_pctl,
+               "' data-drivers-pctl='",jeni$drivers_pctl,
+               "' data-risk-pctl='",jeni$risk_pctl,
+               "' data-black-rate='",jeni$black_rate,
+               "' data-latinx-rate='",jeni$latinx_rate,
+               "' data-aian-rate='",jeni$aian_rate,
+               "' data-nhpi-rate='",jeni$nhpi_rate,
+               "' data-unemployed-rate='",jeni$unemployed_rate,
+               "' data-nohighschool-rate='",jeni$nohighschool_rate,
+               "' data-below200fpl-rate='",jeni$below200fpl_rate,
+               "' data-vc-rate='",jeni$vc_rate,
+               "' data-homeless-rate='",jeni$homeless_rate,
+               "' data-alcdrug-hosp-rate='",jeni$alcdrug_hosp_rate,
+               "' data-mentalhlth-hosp-rate='",jeni$mentalhlth_hosp_rate,
+               "'></div></div>")
+
+# create custom legend labels
+labels <- c(
+"Lowest (0-19th Percentile)",
+"Low (20-39th Percentile)",
+"Moderate (40-59th Percentile)",
+"High (60-79th Percentile)",
+"Highest (80-100th Percentile)")
+
+# build map
+leaflet(jeni, width = "100%", height = "600px", options = leafletOptions(zoomControl = FALSE)) %>%
+
+# new code: add base map
+    addTiles(
+      urlTemplate = paste0("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png?key=", carto_key),
+      attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>'
+    ) %>%
+    addTiles(
+      urlTemplate = paste0("https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png?key=", carto_key),
+      # attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      options = providerTileOptions(pane = "markerPane") # retain unique setting 
+    ) %>%
+# add map panes
+addMapPane("index_pane", zIndex = 400) %>%
+addMapPane("missing_pane", zIndex = 410) %>%
+  # addMapPane("jeni_2019", zIndex = 415) %>%
+  addMapPane("jesi_2021", zIndex = 415) %>%
+addMapPane("sds_pane", zIndex = 420) %>%
+addMapPane("spas_pane", zIndex = 420) %>%
+
+
+# set view and layer control
+  setView(-118.6368454, 34.2324274, zoom = 8.5) %>%
+addLayersControl(overlayGroups = c("Supervisorial Districts","Service Planning Areas", 
+                                   # "JENI 2019 - High/Highest Need ZIP Codes", 
+                                   "JESI - Low/Lowest Service ZIP Codes"), options = layersControlOptions(collapsed = FALSE, autoZIndex = TRUE)) %>%
+
+# create sidebar and add html for content
+           
+addControl(html='<div class="leaflet-popup-scrolled" id="sidebar1"><div class ="zipcode-header"  style="margin-bottom: 8px; margin-top: 8px;"><span class="square-icon"></span><span class="zip" style="font-size: 16px; font-weight: bold;"></span></div><span style="font-size: 12px; font-weight: bold; line-height: 1.5em;">Inequity Drivers Percentile*: </span><span class="drivers-pctl" style="font-size: 12px; font-weight: bold;"></span> | <span class="drivers-category color-format-drivers" style="font-size: 12px; font-weight: bold;"></span><br><div class="progress-bar"><div class="progress-drivers"></div></div></span><br><span style="font-size: 12px; font-weight: bold;">JENI & Other Component Percentiles*</span><br><span style="font-size: 12px;">JENI:  <span class="jeni-pctl" style="font-size: 12px; font-weight: bold;"></span><br><div class="progress-bar"><div class="progress-jeni"></div></div><br>System Involvement:  <span class="system-pctl" style="font-size: 12px; font-weight: bold;"></span><br><div class="progress-bar"><div class="progress-system"></div></div><br>Criminalization Risk:  <span class="risk-pctl" style="font-size: 12px; font-weight: bold;"></span><br><div class="progress-bar"><div class="progress-risk"></div></div><br><br><span style="line-height: 1.5em; font-size: 12px; display: block; width: 95%;"><span class="zip-details" style="font-size: 12px; font-weight: bold;"></span> has a <span class="drivers-category-details color-format-drivers"></span> Inequity Drivers need level. It also scores<span class="system-category color-format-system"></span> on System Involvement, <span class="risk-category color-format-risk"></span> on Criminalization Risk, and <span class="jeni-category color-format-jeni"></span> on JENI overall.<br><br>Neighborhood:  <span class="neighborhood" style="font-size: 12px; font-weight: bold;"></span><br>JENI Rank: <span class="jeni-rank" style="font-size: 12px; font-weight: bold;"></span> out of 277 ZIP Codes<br>Population:  <span class="population" style="font-size: 12px; font-weight: bold;"></span><br>Supervisorial District:  <span class="sd-number" style="font-size: 12px; font-weight: bold;"></span>  |  <span class="sd-name" style="font-size: 12px; font-weight: bold;"></span><br>Service Planning Area: <span class="spa-number" style="font-size: 12px; font-weight: bold;"></span> |  <span class="spa-name" style="font-size: 12px; font-weight: bold;"></span><br><br><span style="font-size: 12px; font-weight: bold;">Indicators</span><br>% Black Population: <span class="black-rate" style="font-size: 12px; font-weight: bold;"></span><br>% Latinx Population: <span class="latinx-rate" style="font-size: 12px; font-weight: bold;"></span><br>% American Indian / Alaskan Native Population: <span class="aian-rate" style="font-size: 12px; font-weight: bold;"></span><br>% Native Hawaiian / Pacific Islander Population: <span class="nhpi-rate" style="font-size: 12px; font-weight: bold;"></span><br>Unemployment Rate: <span class="unemployed-rate" style="font-size: 12px; font-weight: bold;"></span><br>% of Population without High School Diploma: <span class="nohighschool-rate" style="font-size: 12px; font-weight: bold;"></span><br>Below 200% Poverty Level Rate: <span class="below200fpl-rate" style="font-size: 12px; font-weight: bold;"></span><br>Violent Crime Rate (per 1K): <span class="vc-rate" style="font-size: 12px; font-weight: bold;"></span><br><br><span style="font-size: 10px; font-style: italic;">*Percentiles range from 0-100. A higher percentile means a higher level of need in that area.</span></span></div>', position = "topleft") %>%
+  
+  
+# add polygons for JENI ZIP Codes
+addPolygons(color = "black", weight = 1, smoothFactor = 0.5, 
+            opacity = 1.0,
+            fillOpacity = .8, fillColor = ~pal_impact(drivers_pctl), highlight = highlightOptions(color = "white", weight = 5, bringToFront = TRUE, sendToBack = TRUE),
+popup = ~popup,
+group = "JENI", options = pathOptions(pane = "index_pane")) %>%
+
+# add polygons for ZIP Codes wit no jeni
+  addPolygons(data=nojeni,color="#444444", weight = 1, smoothFactor = 0.5, 
+              opacity = 1.0,
+              fillOpacity = .8, fillColor ="#808080", highlight = highlightOptions(color = "#444444", weight = 3, bringToFront = TRUE, sendToBack = TRUE)
+,
+popup = ~paste0(
+"ZIP Code:<b> ", nojeni$zipcode, "</b></br>",
+"No JENI Available</br>Population:<b> ", nojeni$population_count, "</b></br>"),
+options = pathOptions(pane = "missing_pane")
+)%>%
+
+ # add boundaries for lowest service JESI 2021 Zips
+addPolygons(data = jesi_2021_lowest, 
+            opacity= 1.0,
+            fillOpacity=0, color = "black", weight = 2.5, label=~zipcode, group = "JESI - Low/Lowest Service ZIP Codes", options = pathOptions(pane = "jesi_2021", interactive = FALSE), highlight = highlightOptions(color = "white", weight = 3, bringToFront = TRUE)) %>%
+  
+# add boundaries for SPAs and SDs
+addPolygons(data = sds, 
+            opacity = 1.0,
+            dashArray = "10 5",
+            fillOpacity=0, color = "black", weight = 2.5, label=~distname, group = "Supervisorial Districts", options = pathOptions(pane = "sds_pane", interactive = FALSE), highlight = highlightOptions(color = "white", weight = 3, bringToFront = TRUE)) %>%
+  addPolygons(data = spas, 
+              opacity=1.0,
+              dashArray = "5 5",
+              fillOpacity=0, color = "black", weight = 2.5, label=~spa_2012, group = "Service Planning Areas", options = pathOptions(pane = "spas_pane", interactive = FALSE), highlight = highlightOptions(color = "white", weight = 3, bringToFront = TRUE)) %>%
+
+# # add boundaries for highest need JENI Zips
+# addPolygons(data = jeni_2019_highest, 
+#             opacity=1.0,
+#             fillOpacity=0, color = "black", weight = 2.5, label=~zip, group = "JENI 2019 - High/Highest Need ZIP Codes", options = pathOptions(pane = "jeni_2019", interactive = FALSE), highlight = highlightOptions(color = "white", weight = 3, bringToFront = TRUE)) %>%
+
+  #add combined legend  
+    addLegend(position = "bottomleft",
+            title="Inequity Drivers Need Level",
+            labels = c("Lowest (0-19th Percentile)", "Low (20-39th Percentile)",
+                       "Moderate (40-59th Percentile)", "High (60-79th Percentile)","Highest (80-100th Percentile)", "JENI Not Available"),
+            colors= c("#eff3ff","#bdd7e7", "#6baed6", "#3182bd","#08519c", "#808080"), opacity=.9)%>%
+  
+  # layers control
+  addLayersControl(
+    overlayGroups =  c(
+      # "JENI 2019 - High/Highest Need ZIP Codes", 
+      "JESI - Low/Lowest Service ZIP Codes",
+      "Supervisorial Districts",
+      "Service Planning Areas"),
+    options = layersControlOptions(collapsed = TRUE), 
+    position = "topright")  %>%
+ hideGroup("Supervisorial Districts") %>%
+  hideGroup("Service Planning Areas")%>%
+  # hideGroup("JENI 2019 - High/Highest Need ZIP Codes") %>%
+  hideGroup("JESI - Low/Lowest Service ZIP Codes") %>%
+  
+ # Move location of zoom button
+ htmlwidgets::onRender("
+        function(el, x) {
+          L.control.zoom({ position: 'topright' }).addTo(this);}
+    ")
+
+
+# This code adds the instructions "Click to view" above the legend, but I can't get the rendering right when there are tab maps, commenting out for now, maybe Hillary can figure it out later time allotting
+# %>%
+#  htmlwidgets::onRender("
+#         function() {
+#             $('.leaflet-control-layers-overlays').prepend('<label style=\"text-align:left\">Click to view</label>');
+#         }
+#     ")
+
+
+
+```
+<span style='float: right; font-size: 12px;'>Catalyst California (formerly Advancement Project California); Justice Equity Need Index; <u>[catalystcalifornia.org](https://www.catalystcalifornia.org/campaign-tools/maps-and-data/justice-equity-need-index)</u>, 2022. **System Involvement map provided upon request.**</span style>
+
+## Criminalization Risk
+```{r}
+# yellows
+pal_impact <- colorBin(palette = c("#F1F1C2", "#DEDE91","#CBCB61","#B8B830", "#A6A600"), domain = jeni$risk_pctl, bins = 5, reverse = FALSE, pretty = FALSE)
+
+popup <- paste("<div class='hasjeni'><div class='risk-leaflet-data' data-zip='", jeni$zipcode,
+               "' data-neighborhood='",jeni$lat_neighborhood,
+               "' data-jeni-pctl='",jeni$jeni_pctl,
+               "' data-jeni-category='",jeni$jeni_category,
+               "' data-jeni-rank='",jeni$jeni_rank,
+               "' data-population='",prettyNum(jeni$population_count, big.mark = ",", preserve.width = "none"),
+               "' data-sd-number='",jeni$sd_number,
+               "' data-sd-name='",jeni$sd_name,
+               "' data-spa-number='",jeni$spa_number,
+               "' data-spa-name='",jeni$spa_name,
+               "' data-system-category='",jeni$system_category,
+               "' data-drivers-category='",jeni$drivers_category,
+               "' data-risk-category='",jeni$risk_category,
+               "' data-system-pctl='",jeni$system_pctl,
+               "' data-drivers-pctl='",jeni$drivers_pctl,
+               "' data-risk-pctl='",jeni$risk_pctl,
+               "' data-black-rate='",jeni$black_rate,
+               "' data-latinx-rate='",jeni$latinx_rate,
+               "' data-aian-rate='",jeni$aian_rate,
+               "' data-nhpi-rate='",jeni$nhpi_rate,
+               "' data-unemployed-rate='",jeni$unemployed_rate,
+               "' data-nohighschool-rate='",jeni$nohighschool_rate,
+               "' data-below200fpl-rate='",jeni$below200fpl_rate,
+               "' data-vc-rate='",jeni$vc_rate,
+               "' data-homeless-rate='",jeni$homeless_rate,
+               "' data-alcdrug-hosp-rate='",jeni$alcdrug_hosp_rate,
+               "' data-mentalhlth-hosp-rate='",jeni$mentalhlth_hosp_rate,
+               "'></div></div>")
+
+# create custom legend labels
+labels <- c(
+"Lowest (0-19th Percentile)",
+"Low (20-39th Percentile)",
+"Moderate (40-59th Percentile)",
+"High (60-79th Percentile)",
+"Highest (80-100th Percentile)")
+
+# build map
+leaflet(jeni, width = "100%", height = "600px", options = leafletOptions(zoomControl = FALSE)) %>%
+
+# new code: add base map
+    addTiles(
+      urlTemplate = paste0("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png?key=", carto_key),
+      attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>'
+    ) %>%
+    addTiles(
+      urlTemplate = paste0("https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}.png?key=", carto_key),
+      # attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      options = providerTileOptions(pane = "markerPane") # retain unique setting 
+    ) %>%
+# add map panes
+addMapPane("index_pane", zIndex = 400) %>%
+addMapPane("missing_pane", zIndex = 410) %>%
+  # addMapPane("jeni_2019", zIndex = 415) %>%
+    addMapPane("jesi_2021", zIndex = 415) %>%
+addMapPane("sds_pane", zIndex = 420) %>%
+addMapPane("spas_pane", zIndex = 420) %>%
+
+
+# set view and layer control
+  setView(-118.6368454, 34.2324274, zoom = 8.5) %>%
+addLayersControl(overlayGroups = c("Supervisorial Districts","Service Planning Areas", 
+                                   # "JENI 2019 - High/Highest Need ZIP Codes", 
+                                   "JESI - Low/Lowest Service ZIP Codes"), options = layersControlOptions(collapsed = FALSE, autoZIndex = TRUE)) %>%
+
+# create sidebar and add html for content
+addControl(html='<div class="leaflet-popup-scrolled" id="sidebar2"><div class ="zipcode-header"   style="margin-bottom: 8px; margin-top: 8px;"><span class="square-icon"></span><span class="zip" style="font-size: 16px; font-weight: bold;"></span></div><span style="font-size: 12px; font-weight: bold; line-height: 1.5em;">Criminalization Risk Percentile*: </span><span class="risk-pctl" style="font-size: 12px; font-weight: bold;"></span> | <span class="risk-category color-format-risk" style="font-size: 12px; font-weight: bold;"></span><br><div class="progress-bar"><div class="progress-risk"></div></div></span><br><span style="font-size: 12px; font-weight: bold;">JENI & Other Component Percentiles*</span><br><span class="small-heading">JENI:  </span><span class="jeni-pctl" style="font-size: 12px; font-weight: bold;"></span><br><div class="progress-bar"><div class="progress-jeni"></div></div><br><span class="small-heading">System Involvement:  </span><span class="system-pctl" style="font-size: 12px; font-weight: bold;"></span><br><div class="progress-bar"><div class="progress-system"></div></div><br><span class="small-heading">Inequity Drivers:  </span><span class="drivers-pctl" style="font-size: 12px; font-weight: bold;"></span><br><div class="progress-bar"><div class="progress-drivers"></div></div><br><br><span style="line-height: 1.5em; font-size: 12px; display: block; width: 95%;"><span class="zip-details" style="font-size: 12px; font-weight: bold;"></span> has a <span class="risk-category-details color-format-risk"></span> Criminalization Risk need level. It also scores<span class="system-category color-format-system"></span> on System Involvement, <span class="drivers-category color-format-drivers"></span> on Inequity Drivers, and <span class="jeni-category color-format-jeni"></span> on JENI overall.<br><br>Neighborhood:  <span class="neighborhood" style="font-size: 12px; font-weight: bold;"></span><br>JENI Rank: <span class="jeni-rank" style="font-size: 12px; font-weight: bold;"></span> out of 277 ZIP Codes<br>Population:  <span class="population" style="font-size: 12px; font-weight: bold;"></span><br>Supervisorial District:  <span class="sd-number" style="font-size: 12px; font-weight: bold;"></span>  |  <span class="sd-name" style="font-size: 12px; font-weight: bold;"></span><br>Service Planning Area: <span class="spa-number" style="font-size: 12px; font-weight: bold;"></span> |  <span class="spa-name" style="font-size: 12px; font-weight: bold;"></span><br><br><span style="font-size: 12px; font-weight: bold;">Indicators</span><br>Homelessness Rate (per 1K): <span class="homeless-rate" style="font-size: 12px; font-weight: bold;"></span><br>Alcohol and Drug-Related Hospitalizations (per 1K): <span class="alcdrug-hosp-rate" style="font-size: 12px; font-weight: bold;"></span><br>Mental Health Hospitalizations (per 1K): <span class="mentalhlth-hosp-rate" style="font-size: 12px; font-weight: bold;"></span><br><br><span style="font-size: 10px; font-style: italic;">*Percentiles range from 0-100. A higher percentile means a higher level of need in that area.</span></span></div>', position = "topleft") %>%
+
+  # add polygons for JENI ZIP Codes
+addPolygons(color = "black", weight = 1, smoothFactor = 0.5, 
+            opacity = 1.0,
+            fillOpacity = .8, fillColor = ~pal_impact(risk_pctl), highlight = highlightOptions(color = "white", weight = 5, bringToFront = TRUE, sendToBack = TRUE),
+popup = ~popup,
+group = "JENI", options = pathOptions(pane = "index_pane")) %>%
+
+# add polygons for ZIP Codes wit no jeni
+  addPolygons(data=nojeni,color="#444444", weight = 1, smoothFactor = 0.5, fillOpacity = .8, fillColor ="#808080", highlight = highlightOptions(color = "#444444", weight = 3, bringToFront = TRUE, sendToBack = TRUE)
+              ,
+popup = ~paste0(
+"ZIP Code:<b> ", nojeni$zipcode, "</b></br>",
+"No JENI Available</br>Population:<b> ", nojeni$population_count, "</b></br>"),
+options = pathOptions(pane = "missing_pane")
+)%>%
+
+   # add boundaries for lowest service JESI 2021 Zips
+addPolygons(data = jesi_2021_lowest, 
+            opacity = 1.0,
+            fillOpacity=0, color = "black", weight = 2.5, label=~zipcode, group = "JESI - Low/Lowest Service ZIP Codes", options = pathOptions(pane = "jesi_2021", interactive = FALSE), highlight = highlightOptions(color = "white", weight = 3, bringToFront = TRUE)) %>%
+  
+# add boundaries for SPAs and SDs
+addPolygons(data = sds, 
+            dashArray = "10 5",
+            fillOpacity=0, color = "black", weight = 2.5, label=~distname, group = "Supervisorial Districts", options = pathOptions(pane = "sds_pane", interactive = FALSE), highlight = highlightOptions(color = "white", weight = 3, bringToFront = TRUE)) %>%
+  addPolygons(data = spas, 
+              dashArray = "5 5",
+              fillOpacity=0, color = "black", weight = 2.5, label=~spa_2012, group = "Service Planning Areas", options = pathOptions(pane = "spas_pane", interactive = FALSE), highlight = highlightOptions(color = "white", weight = 3, bringToFront = TRUE)) %>%
+
+# # add boundaries for highest need JENI Zips
+# addPolygons(data = jeni_2019_highest, 
+#             opacity = 1.0,
+#             fillOpacity=0, color = "black", weight = 2.5, label=~zip, group = "JENI 2019 - High/Highest Need ZIP Codes", options = pathOptions(pane = "jeni_2019", interactive = FALSE), highlight = highlightOptions(color = "white", weight = 3, bringToFront = TRUE)) %>%
+
+  #add combined legend  
+    addLegend(position = "bottomleft",
+            title="Criminalization Risk Need Level",
+            labels = c("Lowest (0-19th Percentile)", "Low (20-39th Percentile)",
+                       "Moderate (40-59th Percentile)", "High (60-79th Percentile)","Highest (80-100th Percentile)", "JENI Not Available"),
+            colors= c("#F1F1C2", "#DEDE91","#CBCB61","#B8B830", "#A6A600", "#808080"), opacity=.9)%>%
+  
+  # layers control
+  addLayersControl(
+    overlayGroups =  c(
+      # "JENI 2019 - High/Highest Need ZIP Codes", 
+      "JESI - Low/Lowest Service ZIP Codes",
+      "Supervisorial Districts",
+      "Service Planning Areas"),
+    options = layersControlOptions(collapsed = TRUE), 
+    position = "topright")  %>%
+ hideGroup("Supervisorial Districts") %>%
+  hideGroup("Service Planning Areas")%>%
+  # hideGroup("JENI 2019 - High/Highest Need ZIP Codes") %>%
+  hideGroup("JESI - Low/Lowest Service ZIP Codes") %>%
+  
+  
+ # Move location of zoom button
+ htmlwidgets::onRender("
+        function(el, x) {
+          L.control.zoom({ position: 'topright' }).addTo(this);}
+    ")
+  
+# This code adds the instructions "Click to view" above the legend, but I can't get the rendering right when there are tab maps, commenting out for now, maybe Hillary can figure it out later time allotting
+# %>%
+#  htmlwidgets::onRender("
+#         function() {
+#             $('.leaflet-control-layers-overlays').prepend('<label style=\"text-align:left\">Click to view</label>');
+#         }
+#     ")
+```
+<span style='float: right; font-size: 12px;'>Catalyst California (formerly Advancement Project California); Justice Equity Need Index; <u>[catalystcalifornia.org](https://www.catalystcalifornia.org/campaign-tools/maps-and-data/justice-equity-need-index)</u>, 2022. **System Involvement map provided upon request.**</span style>
+
+```{js}
+<!-- This function is used to color code degrees of JENI index ratings in "popup"/sidepanel feature -->
+<!-- Elements include: square icon, main index progress bar, and "lowest" to "highest" keywords -->
+
+<!-- Captures  -->
+var mapsPlaceholder = [];
+L.Map.addInitHook(function () {
+  mapsPlaceholder.push(this);
+  
+  mapsPlaceholder.forEach(map => {
+    
+    
+    map.on('popupopen', (e) => {
+    console.log('popupopen');
+
+    let sidebarId;
+    // If this then modify sidebar on first map
+    console.log(map == mapsPlaceholder[0]);
+    if (map == mapsPlaceholder[0]) {
+    sidebarId = "sidebar1";
+    prefix = "drivers"}
+    
+    // If this then modify sidebar on second map
+    console.log(mapsPlaceholder.length > 1 && map == mapsPlaceholder[1]);
+    
+    if (mapsPlaceholder.length > 1 && map == mapsPlaceholder[1]){
+    sidebarId = "sidebar2";
+    prefix = "risk"}
+    
+    
+    // Use prefixes so you dont have to copy paste all the code below
+    let popups = document.querySelectorAll('.'+ prefix + '-leaflet-data');
+    console.log(popups);
+    
+document.querySelectorAll('.hasjeni').forEach(hasjeni => {
+hasjeni.parentElement.parentElement.parentElement.classList.add('hidden')
+})   
+popups.forEach((popup) => {
+console.log(popup)
+console.log('event');
+console.log(e);
+
+let sidebar = document.querySelector("#"+sidebarId)
+console.log(sidebarId)
+
+
+sidebar.querySelector('.zip').innerHTML = popup.getAttribute('data-zip')
+sidebar.querySelector('.neighborhood').innerHTML = popup.getAttribute('data-neighborhood')
+sidebar.querySelector('.jeni-pctl').innerHTML = popup.getAttribute('data-jeni-pctl')
+sidebar.querySelector('.jeni-category').innerHTML = popup.getAttribute('data-jeni-category')
+sidebar.querySelector('.jeni-rank').innerHTML = popup.getAttribute('data-jeni-rank')
+sidebar.querySelector('.population').innerHTML = popup.getAttribute('data-population')
+sidebar.querySelector('.sd-number').innerHTML = popup.getAttribute('data-sd-number')
+sidebar.querySelector('.sd-name').innerHTML = popup.getAttribute('data-sd-name')
+sidebar.querySelector('.spa-number').innerHTML = popup.getAttribute('data-spa-number')
+sidebar.querySelector('.spa-name').innerHTML = popup.getAttribute('data-spa-name')
+sidebar.querySelector('.zip-details').innerHTML = popup.getAttribute('data-zip')
+if (sidebarId == "sidebar1"){
+sidebar.querySelector('.drivers-category-details').innerHTML = popup.getAttribute('data-drivers-category')
+sidebar.querySelector('.black-rate').innerHTML = popup.getAttribute('data-black-rate')
+sidebar.querySelector('.latinx-rate').innerHTML = popup.getAttribute('data-latinx-rate')
+sidebar.querySelector('.aian-rate').innerHTML = popup.getAttribute('data-aian-rate')
+sidebar.querySelector('.nhpi-rate').innerHTML = popup.getAttribute('data-nhpi-rate')
+sidebar.querySelector('.unemployed-rate').innerHTML = popup.getAttribute('data-unemployed-rate')
+sidebar.querySelector('.nohighschool-rate').innerHTML = popup.getAttribute('data-nohighschool-rate')
+sidebar.querySelector('.below200fpl-rate').innerHTML = popup.getAttribute('data-below200fpl-rate')
+sidebar.querySelector('.vc-rate').innerHTML = popup.getAttribute('data-vc-rate')
+}
+if (sidebarId == "sidebar2"){
+sidebar.querySelector('.risk-category-details').innerHTML = popup.getAttribute('data-risk-category')
+sidebar.querySelector('.homeless-rate').innerHTML = popup.getAttribute('data-homeless-rate')
+sidebar.querySelector('.alcdrug-hosp-rate').innerHTML = popup.getAttribute('data-alcdrug-hosp-rate')
+sidebar.querySelector('.mentalhlth-hosp-rate').innerHTML = popup.getAttribute('data-mentalhlth-hosp-rate')
+}
+sidebar.querySelector('.system-category').innerHTML = popup.getAttribute('data-system-category')
+sidebar.querySelector('.drivers-category').innerHTML = popup.getAttribute('data-drivers-category')
+sidebar.querySelector('.risk-category').innerHTML = popup.getAttribute('data-risk-category')
+sidebar.querySelector('.system-pctl').innerHTML = popup.getAttribute('data-system-pctl')
+sidebar.querySelector('.drivers-pctl').innerHTML = popup.getAttribute('data-drivers-pctl')
+sidebar.querySelector('.risk-pctl').innerHTML = popup.getAttribute('data-risk-pctl')
+
+let components = ["jeni", "system", "drivers", "risk"]
+components.forEach(component => {
+let nodes = sidebar.querySelectorAll('.color-format-' + component);
+    nodes.forEach(el => {
+let classes = [component + "-lowest", component + "-low", component + "-moderate", component + "-high", component + "-highest"]
+    classes.forEach(class_ => {
+    el.classList.remove(class_)
+    })
+    console.log(el.innerHTML.trim())
+if (el.innerHTML.trim() == "Lowest") {
+el.classList.add(component + '-lowest');
+} else if (el.innerHTML.trim() == "Low") {
+el.classList.add(component + '-low');
+} else if (el.innerHTML.trim() == "Moderate") {
+el.classList.add(component + '-moderate');
+} else if (el.innerHTML.trim() == "High") {
+el.classList.add(component + '-high');
+} else if (el.innerHTML.trim() == "Highest") {
+el.classList.add(component + '-highest');
+} else {
+el.classList.add('category-color-error');
+}})
+
+let progressBar = sidebar.querySelector('.progress-' + component)
+console.log(progressBar)
+let classes = [component + "-lowest-bg-color", component + "-low-bg-color", component + "-moderate-bg-color", component + "-high-bg-color", component + "-highest-bg-color"]
+   classes.forEach(class_ => {
+   progressBar.classList.remove(class_)
+   })
+progressBar.style.width = popup.getAttribute('data-' + component + '-pctl').trim() + "%"
+category = popup.getAttribute('data-' + component + '-category').trim()
+if (category == "Lowest") {
+    progressBar.classList.add(component + '-lowest-bg-color');
+} else if (category == "Low") {
+    progressBar.classList.add(component + '-low-bg-color');
+} else if (category == "Moderate") {
+    progressBar.classList.add(component + '-moderate-bg-color');
+} else if (category == "High") {
+    progressBar.classList.add(component + '-high-bg-color');
+} else if (category.trim() == "Highest") {
+    progressBar.classList.add(component + '-highest-bg-color');
+} else {
+    progressBar.classList.add('category-color-error');
+}
+})
+
+let block = sidebar.querySelector('.square-icon')
+classes = [prefix + "-lowest-bg-color", prefix + "-low-bg-color", prefix + "-moderate-bg-color", prefix + "-high-bg-color", prefix + "-highest-bg-color"]
+   classes.forEach(class_ => {
+   block.classList.remove(class_)
+   })
+category = popup.getAttribute('data-' + prefix + '-category').trim()
+if (category == "Lowest") {
+    block.classList.add(prefix + '-lowest-bg-color');
+} else if (category == "Low") {
+    block.classList.add(prefix + '-low-bg-color');
+} else if (category == "Moderate") {
+    block.classList.add(prefix + '-moderate-bg-color');
+} else if (category == "High") {
+    block.classList.add(prefix + '-high-bg-color');
+} else if (category.trim() == "Highest") {
+    block.classList.add(prefix + '-highest-bg-color');
+} else {
+    block.classList.add('category-color-error');
+}
+
+
+      })})})})
+```

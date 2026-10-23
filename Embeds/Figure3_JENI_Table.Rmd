@@ -1,0 +1,184 @@
+
+```{r setup, include = FALSE}
+
+knitr::opts_chunk$set(comment = FALSE, message = FALSE, warning = FALSE, echo = FALSE
+)
+
+#
+library(DT)
+library(RPostgreSQL)
+library(formattable)
+library(knitr)
+library(dplyr)
+library(sf)
+library(leaflet)
+# devtools::install_github('bhaskarvk/leaflet.extras')
+library("leaflet.extras")
+library(htmltools)
+library(tidyr)
+library(stringr)
+# library(rgdal)
+library(rpostgis)
+library(stringr)
+library(scales)
+library(colorspace)
+# install.packages("geojsonsf")
+library(geojsonsf)
+# install.packages("rmapshaper")
+library(rmapshaper)
+
+```
+
+<style type="text/css">
+  h1{
+  font-family: tiempos-light;
+  color: #000000;
+  font-size: 24px;
+  font-weight: bold;
+  }
+  h2{
+   font-family: tiempos-light;
+  color: #000000;
+    font-size: 24px;
+      font-weight: bold;
+
+  }
+  h3{
+   font-family: tiempos-light;
+  color: #000000;
+  }
+  a{
+  font-family: tiempos-light;
+  color: #000000;
+  }
+  ul{
+  font-family: tiempos-light;
+  color: #000000;
+  }
+  ol{
+  font-family: tiempos-light;
+  color: #000000;
+  }
+  body{
+  font-family: tiempos-light;
+  color: #000000;
+}
+.leaflet-control-layers{ 
+    width:250px;
+    opacity:  0.80;
+    
+}
+.legend {
+    width:250px;
+    opacity:  1;
+     border-left:1px solid #737373;
+    border-right:1px solid #737373;
+    border-top:1px solid #737373;
+    border-bottom:1px solid #737373;
+}
+.leaflet-touch .leaflet-control-layers {
+  border-left:1px solid #737373;
+    border-right:1px solid #737373;
+    border-top:1px solid #737373;
+    border-bottom:1px solid #737373;
+}
+</style>
+
+
+# Justice Equity Need Index Data Table {.tabset .tabset-fade}
+```{r}
+
+#remove geoms and reorganize the data for the data table download
+# jeni_data <- jeni[c(1:8,10:18, 23:44)] %>% 
+#   st_drop_geometry()
+# jeni_data<-jeni_data[, c(1,6,7,8,5,2,3,4,9,10,12,13,15,16,18,20,22,24,26,28,30,32,34,36,38)]
+# jeni_data <- arrange(jeni_data, -desc(jeni_rank))
+  
+jeni_data <- jeni %>%
+  st_drop_geometry() %>%
+  select(
+    zipcode,
+    jeni_rank,
+    jeni_pctl,
+    jeni_category,
+    population_count,
+    sd_number,
+    spa_number,
+    lat_neighborhood,
+    system_pctl,
+    system_category,
+    drivers_pctl,
+    drivers_category,
+    risk_pctl,
+    risk_category,
+    black_rate,
+    latinx_rate,
+    aian_rate,
+    nhpi_rate,
+    nohighschool_rate,
+    below200fpl_rate,
+    unemployed_rate,
+    mentalhlth_hosp_rate,
+    alcdrug_hosp_rate, 
+    vc_rate,
+    homeless_rate
+  ) %>%
+  arrange(-desc(jeni_rank))
+
+
+datatable(jeni_data,
+class = 'cell-border stripe',
+colnames=c(
+'JENI Rank'='jeni_rank',
+'JENI Percentile'='jeni_pctl',
+'JENI Category'='jeni_category',
+'ZIP Code'='zipcode',
+'Population'='population_count',
+'Supervisorial District'='sd_number',
+'Service Planning Area'='spa_number',
+'Neighborhood'='lat_neighborhood',
+'System Involvement Percentile' = 'system_pctl',
+'System Involvement Category' = 'system_category',
+'Inequity Drivers Percentile' = 'drivers_pctl',
+'Inequity Drivers Category' = 'drivers_category',
+'Criminalization Risk Percentile' = 'risk_pctl',
+'Criminalization Risk Category' = 'risk_category',
+'% Black Population' = 'black_rate',
+'% Latinx Population' = 'latinx_rate',
+'% American Indian / Alaskan Native Population' = 'aian_rate',
+'% Native Hawaiian / Pacific Islander Population' = 'nhpi_rate',
+'% of Population without a High School Diploma' = 'nohighschool_rate',
+'Below 200% Poverty Level Rate' = 'below200fpl_rate',
+'Unemployment Rate' = 'unemployed_rate',
+'Mental Health Hospitalizations (per 1K)' = 'mentalhlth_hosp_rate',
+'Alcohol and Drug-Related Hospitalizations (per 1K)' = 'alcdrug_hosp_rate',
+'Violent Crime Rate (per 1K)' = 'vc_rate',
+'Homelessness Rate (per 1K)' = 'homeless_rate'
+),
+style ='default',
+rownames = FALSE,
+filter = list(position = 'top', clear = FALSE, plain = TRUE),
+extensions = c(
+  # 'Scroller',
+  # 'FixedHeader',
+               'Buttons',
+               'KeyTable', 'FixedColumns'),
+
+options = list(
+  dom = 'Bfrtip',
+  buttons = c('csv','excel'),
+pageLength =15,
+autoWidth = TRUE,
+scrollX = T,
+scroller = TRUE
+# ,
+# columnDefs = list(list(width = '100px', targets = "_all"))
+# , searchHighlight = TRUE
+)
+,
+caption = htmltools::tags$caption(
+style = 'caption-side: bottom; text-align: left;',
+htmltools::strong('Percentiles range from 0-100. A higher percentile means a higher level of need.'))
+)
+```
+<span style='float: right; font-size: 12px;'>Catalyst California (formerly Advancement Project California); Justice Equity Need Index; <u>[catalystcalifornia.org](https://www.catalystcalifornia.org/campaign-tools/maps-and-data/justice-equity-need-index)</u>, 2022.</span style>
